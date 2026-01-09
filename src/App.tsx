@@ -24,12 +24,29 @@ function App() {
     },
   });
 
+  const calculation = 1 + 1;
+
   return (
     <div style={{ padding: "2rem", fontFamily: "system-ui, sans-serif" }}>
       <h1>Cloud Env Client</h1>
       <p style={{ color: "#666" }}>
         This app fetches data from the Hono server at {API_URL}
       </p>
+
+      <div
+        style={{
+          marginTop: "1rem",
+          padding: "1rem",
+          border: "1px solid #10b981",
+          borderRadius: "8px",
+          backgroundColor: "#ecfdf5",
+        }}
+      >
+        <h2 style={{ marginTop: 0, color: "#059669" }}>Math Calculation:</h2>
+        <p style={{ fontSize: "1.25rem", fontWeight: "bold", color: "#047857" }}>
+          1 + 1 = {calculation}
+        </p>
+      </div>
 
       <div
         style={{
