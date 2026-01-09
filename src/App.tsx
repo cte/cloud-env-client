@@ -4,6 +4,13 @@ interface HelloResponse {
   message: string;
 }
 
+interface CalculationResponse {
+  operation: string;
+  operands: number[];
+  result: number;
+  expression: string;
+}
+
 const API_URL = "http://localhost:5174";
 
 function App() {
@@ -17,6 +24,23 @@ function App() {
     queryKey: ["hello"],
     queryFn: async () => {
       const response = await fetch(`${API_URL}/api/hello`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    },
+  });
+
+  const {
+    data: calculationData,
+    isPending: calculationIsPending,
+    isError: calculationIsError,
+    error: calculationError,
+    refetch: calculationRefetch,
+  } = useQuery<CalculationResponse>({
+    queryKey: ["calculation"],
+    queryFn: async () => {
+      const response = await fetch(`${API_URL}/api/calculate/add`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -74,6 +98,59 @@ function App() {
         }}
       >
         Refresh
+      </button>
+
+      <div
+        style={{
+          marginTop: "2rem",
+          padding: "1rem",
+          border: "1px solid #ddd",
+          borderRadius: "8px",
+          backgroundColor: "#f0fdf4",
+        }}
+      >
+        <h2 style={{ marginTop: 0 }}>Calculation: 1 + 1 = ?</h2>
+        {calculationIsPending && <p>Loading...</p>}
+        {calculationIsError && (
+          <p style={{ color: "red" }}>
+            Error:{" "}
+            {calculationError instanceof Error
+              ? calculationError.message
+              : "Unknown error"}
+          </p>
+        )}
+        {calculationData && (
+          <div>
+            <p
+              style={{
+                fontSize: "1.5rem",
+                fontWeight: "bold",
+                color: "#16a34a",
+              }}
+            >
+              {calculationData.expression}
+            </p>
+            <p style={{ color: "#666", marginTop: "0.5rem" }}>
+              Operation: {calculationData.operation}
+            </p>
+          </div>
+        )}
+      </div>
+
+      <button
+        onClick={() => calculationRefetch()}
+        style={{
+          marginTop: "1rem",
+          padding: "0.5rem 1rem",
+          fontSize: "1rem",
+          cursor: "pointer",
+          backgroundColor: "#16a34a",
+          color: "white",
+          border: "none",
+          borderRadius: "4px",
+        }}
+      >
+        Refresh Calculation
       </button>
     </div>
   );
